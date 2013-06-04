@@ -50,6 +50,5 @@
 	       android:drawableRight="@drawable/arrow_right"
 	       android:padding="4dp"
 	       />
-	   
     </LinearLayout>
 </LinearLayout>
