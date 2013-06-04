@@ -64,6 +64,18 @@ public class QuizActivity extends Activity {
 			}
 		});
 		
+		
+		mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+		mQuestionTextView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
+				updateQuestion();
+			}
+		});
+		
+		
 		/*LinearLayout linearLayout = (LinearLayout)findViewById(R.id.my_layout);
 		TextView tv = new TextView(this);
 		tv.setText("Sample");
