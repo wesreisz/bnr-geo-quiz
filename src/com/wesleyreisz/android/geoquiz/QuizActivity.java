@@ -14,19 +14,33 @@ public class QuizActivity extends Activity {
 
 	private Button mTrueButton;
 	private Button mFalseButton;
+	private Button mNextButton;
+	private TextView mQuestionTextView;
+	
+	private TrueFalse[] mQuestionBank = new TrueFalse[]{
+		new TrueFalse(R.string.question_africa, false),
+		new TrueFalse(R.string.question_americas, true),
+		new TrueFalse(R.string.question_asia, true),
+		new TrueFalse(R.string.question_mideast, false),
+		new TrueFalse(R.string.question_oceans, true)
+	};
+	
+	private int mCurrentIndex = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quiz);
 		
+		mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
+		updateQuestion();
+		
 		mTrueButton = (Button) findViewById(R.id.true_button);
 		mTrueButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
-				
+				checkAnswer(true);
 			}
 		});
 		
@@ -35,16 +49,26 @@ public class QuizActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
-				
+				checkAnswer(false);
 			}
 		});
 		
-		LinearLayout linearLayout = (LinearLayout)findViewById(R.id.my_layout);
+		
+		mNextButton = (Button) findViewById(R.id.next_button);
+		mNextButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
+				updateQuestion();
+			}
+		});
+		
+		/*LinearLayout linearLayout = (LinearLayout)findViewById(R.id.my_layout);
 		TextView tv = new TextView(this);
 		tv.setText("Sample");
 		tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
-		linearLayout.addView(tv);
+		linearLayout.addView(tv);*/
 
 	}
 
@@ -55,4 +79,19 @@ public class QuizActivity extends Activity {
 		return true;
 	}
 
+	private void updateQuestion(){
+		int question = mQuestionBank[mCurrentIndex].getQuestion();
+		mQuestionTextView.setText(question);
+	}
+	private void checkAnswer(boolean userPressedTrue){
+		boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+		int messageResId = 0;
+		if(userPressedTrue == answerIsTrue){
+			messageResId = R.string.correct_toast;
+		}else{
+			messageResId = R.string.incorrect_toast;
+		}
+		
+		Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+	}
 }
