@@ -2,6 +2,7 @@ package com.wesleyreisz.android.geoquiz;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -12,7 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class QuizActivity extends Activity {
-
+	//private member variables
+	private final String TAG = "QuizActivity";
+	private final String CURRENT_KEY_INDEX = "currentIndex";
+	
+    //UI elements
 	private Button mTrueButton;
 	private Button mFalseButton;
 	private ImageButton mNextButton;
@@ -33,6 +38,11 @@ public class QuizActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quiz);
+		
+		if (savedInstanceState != null){
+			Log.d(TAG,"Restoring State");
+			mCurrentIndex = savedInstanceState.getInt(CURRENT_KEY_INDEX,0);
+		}
 		
 		mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
 		updateQuestion();
@@ -102,6 +112,13 @@ public class QuizActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.quiz, menu);
 		return true;
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		Log.i(TAG, "Saving state");
+		outState.putInt(CURRENT_KEY_INDEX, mCurrentIndex);
 	}
 
 	private void updateQuestion(){
