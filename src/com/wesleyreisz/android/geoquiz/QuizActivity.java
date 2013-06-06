@@ -1,10 +1,12 @@
 package com.wesleyreisz.android.geoquiz;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,6 +24,7 @@ public class QuizActivity extends Activity {
 	private Button mFalseButton;
 	private ImageButton mNextButton;
 	private ImageButton mPrevButton;
+	private Button mCheatButton;
 	private TextView mQuestionTextView;
 	
 	private TrueFalse[] mQuestionBank = new TrueFalse[]{
@@ -66,16 +69,6 @@ public class QuizActivity extends Activity {
 		});
 		
 		
-		mNextButton = (ImageButton) findViewById(R.id.next_button);
-		mNextButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
-				updateQuestion();
-			}
-		});
-		
 		mPrevButton = (ImageButton) findViewById(R.id.prev_button);
 		mPrevButton.setOnClickListener(new View.OnClickListener() {
 			
@@ -83,6 +76,32 @@ public class QuizActivity extends Activity {
 			public void onClick(View v) {
 				if (mCurrentIndex==0){mCurrentIndex = mQuestionBank.length;}
 				mCurrentIndex = (mCurrentIndex -1) % mQuestionBank.length;
+				updateQuestion();
+			}
+		});
+		
+		mCheatButton = (Button) findViewById(R.id.cheat_button);
+		/*
+		 * TODO: This is throwing a nullpointer exception... it is on page 102 
+		 * of the book. -wtr
+		 * 
+		 * 
+		 * mCheatButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(QuizActivity.this, CheatActivity.class);
+				boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+				i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+				startActivity(i);
+			}
+		});*/
+		
+		mNextButton = (ImageButton) findViewById(R.id.next_button);
+		mNextButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
 				updateQuestion();
 			}
 		});
@@ -98,13 +117,6 @@ public class QuizActivity extends Activity {
 			}
 		});
 		
-		
-		/*LinearLayout linearLayout = (LinearLayout)findViewById(R.id.my_layout);
-		TextView tv = new TextView(this);
-		tv.setText("Sample");
-		tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
-		linearLayout.addView(tv);*/
-
 	}
 
 	@Override
