@@ -18,6 +18,7 @@ public class QuizActivity extends Activity {
 	//private member variables
 	private final String TAG = "QuizActivity";
 	private final String CURRENT_KEY_INDEX = "currentIndex";
+	private boolean mIsCheater;
 	
     //UI elements
 	private Button mTrueButton;
@@ -81,20 +82,15 @@ public class QuizActivity extends Activity {
 		});
 		
 		mCheatButton = (Button) findViewById(R.id.cheat_button);
-		/*
-		 * TODO: This is throwing a nullpointer exception... it is on page 102 
-		 * of the book. -wtr
-		 * 
-		 * 
-		 * mCheatButton.setOnClickListener(new View.OnClickListener() {
+		mCheatButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(QuizActivity.this, CheatActivity.class);
 				boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
 				i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
-				startActivity(i);
+				startActivityForResult(i, 0);
 			}
-		});*/
+		});
 		
 		mNextButton = (ImageButton) findViewById(R.id.next_button);
 		mNextButton.setOnClickListener(new View.OnClickListener() {
@@ -132,6 +128,15 @@ public class QuizActivity extends Activity {
 		Log.i(TAG, "Saving state");
 		outState.putInt(CURRENT_KEY_INDEX, mCurrentIndex);
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (data==null){
+			return;
+		}
+		mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+	}
 
 	private void updateQuestion(){
 		int question = mQuestionBank[mCurrentIndex].getQuestion();
@@ -140,10 +145,15 @@ public class QuizActivity extends Activity {
 	private void checkAnswer(boolean userPressedTrue){
 		boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
 		int messageResId = 0;
-		if(userPressedTrue == answerIsTrue){
-			messageResId = R.string.correct_toast;
+		
+		if(mIsCheater){
+			messageResId = R.string.judgement_toast;
 		}else{
-			messageResId = R.string.incorrect_toast;
+			if(userPressedTrue == answerIsTrue){
+				messageResId = R.string.correct_toast;
+			}else{
+				messageResId = R.string.incorrect_toast;
+			}
 		}
 		
 		Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
