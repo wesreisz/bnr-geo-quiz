@@ -2,12 +2,15 @@ package com.wesleyreisz.android.geoquiz;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AnalogClock;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -19,6 +22,7 @@ public class QuizActivity extends Activity {
 	private final String TAG = "QuizActivity";
 	private final String CURRENT_KEY_INDEX = "currentIndex";
 	private boolean mIsCheater;
+	private PackageInfo pInfo;
 	
     //UI elements
 	private Button mTrueButton;
@@ -27,6 +31,7 @@ public class QuizActivity extends Activity {
 	private ImageButton mPrevButton;
 	private Button mCheatButton;
 	private TextView mQuestionTextView;
+	private TextView mVersionTextView;
 	
 	private TrueFalse[] mQuestionBank = new TrueFalse[]{
 		new TrueFalse(R.string.question_africa, false),
@@ -68,7 +73,6 @@ public class QuizActivity extends Activity {
 				checkAnswer(false);
 			}
 		});
-		
 		
 		mPrevButton = (ImageButton) findViewById(R.id.prev_button);
 		mPrevButton.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +116,15 @@ public class QuizActivity extends Activity {
 				updateQuestion();
 			}
 		});
+		
+		mVersionTextView = (TextView) findViewById(R.id.version);
+		PackageInfo pInfo;
+		try {
+			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			mVersionTextView.setText("Version: " +  pInfo.versionName + " API Level: " + android.os.Build.VERSION.SDK_INT);
+		} catch (NameNotFoundException e) {
+			mVersionTextView.setText("API Level: " + android.os.Build.VERSION.SDK_INT);
+		}
 		
 	}
 
